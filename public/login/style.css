@@ -1,0 +1,68 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background: url('../index/bg1.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #e0e0e0;
+  overflow: hidden;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transform: translateY(100px);
+  opacity: 1;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.notification.error {
+  background-color: rgba(112, 30, 38, 0.8);
+}
+
+.notification.success {
+  background-color: rgba(25, 71, 36, 0.8);
+}
+.form{
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #e0e0e011;
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.inputPassword, .bouton{
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #59416d7c;
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.3);
+  color:#e0e0e0;
+  outline:none;
+}
+.bouton{
+  cursor:pointer;
+}
+.inputPassword:focus{
+  border: 1px solid #8d58b87c;
+}

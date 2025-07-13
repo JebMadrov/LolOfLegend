@@ -1,0 +1,19 @@
+{
+  "name": "note-app",
+  "version": "1.0.0",
+  "description": "Prise de notes protégée",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

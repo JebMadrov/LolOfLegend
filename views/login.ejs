@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Connexion</title>
+  <link rel="stylesheet" href="/login/style.css" />
+</head>
+<body>
+  <div class="container">
+    <form method="POST" class="form">
+      <input type="password" name="password" class="inputPassword" placeholder="Mot de passe" required />
+      <button type="submit" class="bouton">Se connecter</button>
+    </form>
+    <% if (error) { %>
+      <p class="notification show error" id="notification"><%= error %></p>
+    <% } %>
+    <script>
+      const notification = document.getElementById('notification');
+      if (notification) {
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3000); // 3 secondes
+      }
+    </script> 
+  </div> 
+</body>
+</html>

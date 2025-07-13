@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mes notes</title>
+  <link rel="stylesheet" href="/index/style.css" />
+  <link rel="icon" type="image/png" href="/logo.png">
+</head>
+<body>
+  <div id="container">
+    <aside id="sidebar">
+      <div id="search-container">
+        <span class="search-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9" cy="9" r="7" stroke="#7e7a8a" stroke-width="2"/>
+            <line x1="14.4142" y1="14" x2="18" y2="17.5858" stroke="#7e7a8a" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <input type="text" id="search-input" placeholder="Rechercher une note...">
+        <div id="search-results"></div>
+      </div>
+      <div id="tabs">
+        <div class="folder">
+          <div class="folder-header">
+            <span class="folder-arrow">▶</span>
+            <span class="folder-name">Notes rapides</span>
+            <div class="folder-actions">
+              <button class="rename-folder" title="Renommer">✎</button>
+              <button class="delete-folder" title="Supprimer">×</button>
+            </div>
+          </div>
+          <div class="folder-content">
+            <% notes.forEach(note => { %>
+              <div class="tab" data-id="<%= note.id %>">
+                <span class="tab-title"><%= note.title %></span>
+                <div class="tab-actions">
+                  <button class="rename-tab" title="Renommer">✎</button>
+                  <button class="delete-tab" title="Supprimer">×</button>
+                </div>
+              </div>
+            <% }); %>
+            <button class="add-note-btn">+ Ajouter une note</button>
+          </div>
+        </div>
+      </div>
+      <button id="add-folder">+ Ajouter un dossier</button>
+      <div class="resize-handle"></div>
+    </aside>
+
+    <div id="right-side">
+      <div id="settings">
+        <label for="font-family">Police :</label>
+        <select id="font-family">
+          <option class="option" value="Arial">Arial</option>
+          <option class="option" value="Courier New">Courier New</option>
+          <option class="option" value="Times New Roman">Times New Roman</option>
+        </select>
+
+        <label for="font-size">Taille :</label>
+        <input type="number" id="font-size" min="8" max="36" value="14" /> px
+      </div>
+
+      <main id="editor">
+        <div id="note-editor" contenteditable="true" placeholder="Écrivez votre note ici..."></div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // Pass notes data to client
+    window.initialNotes = <%- JSON.stringify(notes) %>;
+    window.initialFolders = <%- JSON.stringify(folders) %>;
+  </script>
+  <script src="/index/script.js"></script>
+</body>
+</html>
