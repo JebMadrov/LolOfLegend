@@ -4,14 +4,19 @@
   "description": "Prise de notes protégée",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "body-parser": "^1.20.3",
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "socket.io": "^4.7.1",
     "express-session": "^1.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
   },
   "keywords": [],
   "author": "",
