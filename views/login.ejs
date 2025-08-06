@@ -4,22 +4,19 @@
   <title>Connexion</title>
   <link rel="stylesheet" href="/login/style.css" />
 </head>
-<body>
+<body>  
+  <img src="/logo.png">
   <div class="container">
-    <form method="POST" class="form">
-      <input type="password" name="password" class="inputPassword" placeholder="Mot de passe" required />
-      <button type="submit" class="bouton">Se connecter</button>
+    <h1>Connexion</h1>
+    <% if (error) { %><p style="color: rgb(168, 3, 3);"><%= error %></p><% } %>
+    <form method="POST" action="/login" class="form1">
+      <input type="text" name="username" placeholder="Nom d’utilisateur" required>
+      <input type="password" name="password" placeholder="Mot de passe" required>
+      <button type="submit" class="boutonglow">Se connecter</button>
     </form>
-    <% if (error) { %>
-      <p class="notification show error" id="notification"><%= error %></p>
-    <% } %>
+    <a href="/register" class="ChangerPage">Créer un compte</a>
+
     <script>
-      const notification = document.getElementById('notification');
-      if (notification) {
-        setTimeout(() => {
-          notification.classList.remove('show');
-        }, 3000); // 3 secondes
-      }
     </script> 
   </div> 
 </body>

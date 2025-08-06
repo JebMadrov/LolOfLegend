@@ -1,7 +1,7 @@
 {
-  "name": "note-app",
+  "name": "lol-legend",
   "version": "1.0.0",
-  "description": "Prise de notes protégée",
+  "description": "Jeu de strat lol",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
@@ -12,8 +12,9 @@
     "dotenv": "^16.5.0",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "express-session": "^1.18.1",
     "socket.io": "^4.7.1",
-    "express-session": "^1.18.1"
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.0"
