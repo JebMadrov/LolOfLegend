@@ -35,21 +35,21 @@ document.addEventListener("DOMContentLoaded", () => {
  socket.on("gameStart", ({ gameId, players }) => {
   status.textContent = `La partie ${gameId} commence ! Joueurs : ${players.join(" vs ")}`;
   spinningloader.style.display = "none";
-});
-
-socket.on('waitingStart', ({ gameId, players, delaySeconds }) => {
-  spinningloader.style.display = "block";
-});
-
-socket.on('connectedUsers', (userList) => {
-  const ul = document.getElementById('joueursconnectes');
-  ul.innerHTML = ''; 
-  userList.forEach(username => {
-    const li = document.createElement('li');
-    li.textContent = username;
-    ul.appendChild(li);
   });
-});
+
+  socket.on('waitingStart', ({ gameId, players, delaySeconds }) => {
+    spinningloader.style.display = "block";
+  });
+
+  socket.on('connectedUsers', (userList) => {
+    const ul = document.getElementById('joueursconnectes');
+    ul.innerHTML = ''; 
+    userList.forEach(username => {
+      const li = document.createElement('li');
+      li.textContent = username;
+      ul.appendChild(li);
+    });
+  });
 
 
 
