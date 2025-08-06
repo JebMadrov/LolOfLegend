@@ -1,24 +1,61 @@
 function PFC(io, game) {
   const [player1, player2] = game.players;
   const { id: gameId } = game;
-
-  player1.emit('message', `Bienvenue dans la partie ${gameId}, ${player1.username}`);
-  player2.emit('message', `Bienvenue dans la partie ${gameId}, ${player2.username}`);
+  console.log("PFC joueurs : " + player1.username + " vs " + player2.username)
+  var fini = false;
 
   game.players.forEach(player => {
-    player.on('playMove', (move) => {
-      const opponent = game.players.find(p => p.id !== player.id);
-      if (opponent) {
-        opponent.emit('opponentMove', move);
+
+    player.on('SelectCard', (cardSelected) => {
+      player.Card = cardSelected   
+      if (player1.Card && player2.Card){
+        game.players.forEach(player => {player.emit('CardsSelected');});
+      }
+      fini = false;
+    });
+
+    player.on('finSelectCards', () => {
+      if(!fini){
+        console.log( player1.username + " a joué : " + player1.Card + " et " + player2.username + " a joué : " + player2.Card);
+        if(player1.Card === player2.Card){
+          game.players.forEach(player => {player.emit('RestartPFC');});
+          player1.Card = null;
+          player2.Card = null;
+          fini = true;
+        }
+        else{
+          fini = true;
+          const gagnant = determineWinner(player1,player2);
+          game.state = {
+            firstpick : gagnant.username
+          };
+          game.players.forEach(player => {player.emit('PFC_Fini',gagnant.username);});
+          player1.Card = null;
+          player2.Card = null;
+        }
       }
 
     });
+
+    
   });
 
-  game.state = {
-    moves: {}, // Ex : { socket.id: 'Pierre' }
-    round: 1
-  };
+  
 }
 
 module.exports = { PFC };
+
+
+function determineWinner(player1, player2) {
+  if (
+      (player1.Card === "Card_Pierre" && player2.Card === "Card_Ciseaux") ||
+      (player1.Card === "Card_Feuille" && player2.Card === "Card_Pierre") ||
+      (player1.Card === "Card_Ciseaux" && player2.Card === "Card_Feuille")
+  ) {
+      console.log(player1.username + " gagne !");
+      return player1;
+  } else {
+      console.log(player2.username + " gagne !");
+      return player2;
+  }
+}

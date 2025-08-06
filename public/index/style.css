@@ -1,9 +1,10 @@
 :root{
   --textJaune : rgb(240, 220, 180);
   --JauneFonce : rgba(218, 165, 32, 0.42);
-  --VioletFonce : #050010;
+  --VioletFonce : #08001a;
   --textJauneFonce : rgb(200, 155, 60);
-  
+  --gradientBleu : linear-gradient(130deg, #1973bd, #234da8, #1973bd,#234da8, #1973bd,#234da8);
+  --gradientFonce : linear-gradient(130deg, #003b6bb9, #0337a77a, #003b6bb9,#0337a77a, #003b6bb9,#0337a77a);
 }
 @font-face {
   font-family: "Lol";
@@ -19,7 +20,8 @@
 body {
   margin: 0; padding: 0; height: 100%; width:100%;
   font-family: Arial, sans-serif;
-  background: url('bg1.jpg') no-repeat center center fixed;
+  /*background: url('bg1.jpg') no-repeat center center fixed;*/
+  background-color: rgb(104, 104, 104);
   background-size: cover;
   color: #e0e0e0;
   overflow: hidden;
@@ -78,4 +80,84 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.PFC_Container{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+  gap:25px;
+}
+.BarreTpsCards{
+  display: none;
+  width: 600px;
+  height: 10px;
+  background-color: var(--VioletFonce);
+  border-radius: 5px;
+  border:var(--textJauneFonce) 1px solid;
+  position: relative;  /* Important pour positionner le ::after */
+  overflow: hidden;
+}
+.BarreTpsCards::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;  /* Commence vide */
+  background: var(--gradientBleu);
+  box-shadow: #1973bd 5px 0 3px;
+}
+.BarreTpsCards.animate::after {
+  animation: fillBar 5s linear forwards;
+}
+@keyframes fillBar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.Cards_Container{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: row;
+  gap:25px;
+}
+.Card{
+  height: 300px;
+  width: 169px;
+  background: var(--VioletFonce);
+  border-radius: 20px;
+  border:var(--JauneFonce) 2px solid;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
+  transition: all ease 0.8s;
+  display: none;
+}
+.Card:hover{
+  background: var(--gradientBleu);
+  -webkit-animation: Animation 1s  infinite linear;
+  -moz-animation: Animation 1s  infinite linear;
+  animation: Animation 1s  infinite linear;
+  background-size: 300% 300%;
+  cursor: pointer;
+}
+.Selected_Card{
+
+  background: var(--gradientFonce);
+  -webkit-animation: Animation 2s  infinite linear;
+  -moz-animation: Animation 2s  infinite linear;
+  animation: Animation 2s  infinite linear;
+  background-size: 300% 300%;
+}
+.Card::before{
+  position:relative;
+  display: block;
+  height:290px;
+  width: 159px;
+  background-color: transparent;
+  content: '';
+  top:4px;
+  left:4px;
+  border-radius: 15px;
+  border: 1px solid var(--JauneFonce);
 }

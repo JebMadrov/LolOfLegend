@@ -53,16 +53,6 @@ function registerSocketHandlers(io, socket) {
     callback({ success: true });
   });
 
-  // Jouer un coup
-  socket.on('playMove', ({ gameId, move }) => {
-    const game = games.get(gameId);
-    if (!game) return;
-
-    const opponent = game.players.find(p => p.id !== socket.id);
-    if (opponent) {
-      opponent.emit('opponentMove', move);
-    }
-  });
 
   // Gestion de la déconnexion
   socket.on('disconnect', () => {
