@@ -63,9 +63,12 @@
 <!-- =======================Profil======================= -->
 
   <div class="ProfilContainer">
+
+    <div class="close-cross" onclick="document.querySelector('.ProfilContainer').style.display = 'none'"></div>
+
     <div class="ProfilColumn Modifiable">
       <h2>Éditer le profil</h2>
-      
+
       <label>Icône :</label>
       <img id="iconPreview" src="/logo.png" alt="Icône du joueur" style="width: 100px; height: 100px; cursor: pointer; border-radius: 10px;" />
       <input type="file" id="iconUpload" accept="image/*" style="display: none;" />
@@ -73,16 +76,16 @@
 
 
       <label for="username">Nom d’utilisateur :</label>
-      <input type="text" id="username" />
+      <input type="text" id="username" maxlength="25"/>
   
       <label for="password">Mot de passe :</label>
       <input type="password" id="password" />
   
       <label for="team">Équipe :</label>
-      <input type="text" id="team" />
+      <input type="text" id="team" maxlength="25" />
   
-      <label for="trigramme">Trigramme :</label>
-      <input type="text" id="trigramme" />
+      <label for="trigramme">Acronyme :</label>
+      <input type="text" id="trigramme" maxlength="4"/>
   
       <button id="saveChanges">Enregistrer</button>
     </div>
@@ -91,6 +94,8 @@
       <h2>Informations</h2>
   
       <p><strong>Points de Ligue :</strong> <span id="lp"></span></p>
+      <p><strong>Winrate :</strong> <span id="winrate"></span></p>
+      <p><strong>Parties jouées :</strong> <span id="gamesplayed"></span></p>
       <p><strong>Victoires :</strong> <span id="wins"></span></p>
       <p><strong>Défaites :</strong> <span id="losses"></span></p>
     </div>

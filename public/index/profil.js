@@ -51,6 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('lp').textContent = data.LP;
         document.getElementById('wins').textContent = data.victoires;
         document.getElementById('losses').textContent = data.defaites;
+        const total = data.victoires + data.defaites;
+        const winrate = total > 0 ? (data.victoires / total) * 100 : 0;
+        document.getElementById('winrate').textContent = `${winrate.toFixed(1)}%`;
+        document.getElementById('gamesplayed').textContent = total;
     });
 
     

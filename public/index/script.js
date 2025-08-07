@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement('li');
       li.innerHTML = `
         <img src="${user.icon}" width="48" height="48" style="vertical-align:middle;" class="IconesUsers">
-        <p>   <strong style="font-size:1.5em;color:var(--textJauneFonce)">${user.username}</strong> <br>  <span style="font-size:0.7em;color:var(--textJaune)"> [${user.trigramme}]  </span> </p>
+        <p>   <strong style="font-size:1.5em;color:var(--textJauneFonce)">${user.username}</strong> <br>  <span style="font-size:0.7em;color:var(--textJaune)"> [${user.trigramme}] ${user.LP} LP  </span> </p>
         <button onclick="inviter('${user.username}')">Inviter</button>
       `;
       li.classList.add("ListeJoueursConnectes");

@@ -4,3 +4,4 @@ logs/
 *.log
 docker-volume/
 users.json
+public/iconesJoueurs/

@@ -84,6 +84,15 @@ function registerSocketHandlers(io, socket) {
       });
       const { socket: _, ...safeData } = current;
       socket.emit('accountInfoUpdated', safeData);
+      io.emit('connectedUsers', Array.from(users.values()).map(u => ({
+        username: u.username,
+        icon: u.icon,
+        team: u.team,
+        LP: u.LP,
+        trigramme:u.trigramme,
+        defaites:u.defaites,
+        victoires:u.victoires
+      })));
     } catch (err) {
       console.error('Erreur lors de la mise à jour du compte :', err);
       socket.emit('accountInfoError', 'Erreur serveur lors de la mise à jour');

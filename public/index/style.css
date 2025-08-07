@@ -66,6 +66,7 @@ body {
   color:var(--textJaune);
   text-align: center;
   width: 100%;
+  display: block;
 }
 .UserConnecte{
   display: flex;
@@ -78,7 +79,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: left;
-  gap:20px;
+  gap:10px;
   margin: 0;
   margin-left: 10px;
 }
@@ -94,6 +95,19 @@ ul {
 }
 p{
   color:var(--textJaune);
+  font-family: "Lol";
+}
+h2{
+  padding: 10px;
+  font-size: 2em;
+  font-family:'Lolb';
+  color:var(--textJauneFonce);
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin:0;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgba(100, 72, 0, 0.78);
 }
 button{
   border-radius: 999px;
@@ -277,7 +291,6 @@ button:hover{
 .ProfilContainer{
   background-color: var(--VioletFonce);
   height: 80%;
-  width: 70%;
   border-radius: 20px;
   border:var(--JauneFonce) 2px solid;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
@@ -287,9 +300,10 @@ button:hover{
   outline-offset: -8px;
   position: absolute;
   padding: 20px;
+  gap:50px;
 }
 .ProfilColumn {
-  flex: 1;
+  width: 400px;
   padding: 20px;
 }
 
@@ -297,17 +311,47 @@ button:hover{
   display: block;
   margin-top: 10px;
   font-weight: bold;
+  color:var(--textJaune);
+  font-family: "Lol";
 }
-
 .ProfilColumn input {
   width: 100%;
   padding: 5px;
   margin-bottom: 10px;
 }
-
 #saveChanges {
   margin-top: 15px;
   padding: 10px;
   width: 100%;
   font-weight: bold;
+}
+.close-cross {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+.close-cross::before,
+.close-cross::after {
+  content: '';
+  position: absolute;
+  top: 9px;
+  left: 0;
+  width: 20px;
+  height: 2px;
+  background-color: var(--textJaune);
+  border-radius: 1px;
+}
+.close-cross::before {
+  transform: rotate(45deg);
+}
+.close-cross::after {
+  transform: rotate(-45deg);
+}
+.close-cross:hover {
+  opacity: 1;
 }
