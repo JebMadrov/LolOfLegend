@@ -1,7 +1,9 @@
 const games = new Map();
 const users = new Map(); 
 const { PFC } = require('./PFC');
-
+const path = require('path');
+const fs = require('fs').promises;
+const USERS_FILE = path.join(__dirname, '../users.json');
 
 function generateGameId() {
   return Math.random().toString(36).substr(2, 9); // exemple : 'k3tz2gh9a'
@@ -9,10 +11,23 @@ function generateGameId() {
 
 function registerSocketHandlers(io, socket) {
   // Le client doit envoyer son pseudo juste après connexion Socket
-  socket.on('setUsername', (username) => {
-    socket.username = username;
-    users.set(socket.id, username);  
-    io.emit('connectedUsers', Array.from(users.values()));
+  socket.on('setUsername', async (username) => {
+    try {
+      const data = await fs.readFile(USERS_FILE, 'utf-8');
+      const allUsers = JSON.parse(data);
+      const user = allUsers.find(u => u.username === username);
+
+      if (!user) {
+        return socket.emit('authError', 'Utilisateur non trouvé');
+      }
+
+      socket.username = username;
+      users.set(socket.id, user);
+
+      io.emit('connectedUsers', Array.from(users.values()));
+    } catch (err) {
+      console.error('Erreur chargement users.json :', err);
+    }
   });
 
   // Créer une partie

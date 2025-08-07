@@ -20,7 +20,7 @@
 body {
   margin: 0; padding: 0; height: 100%; width:100%;
   font-family: Arial, sans-serif;
-  /*background: url('bg1.jpg') no-repeat center center fixed;*/
+  background: url('bg1.jpg') no-repeat center center fixed;
   background-color: rgb(104, 104, 104);
   background-size: cover;
   color: #e0e0e0;

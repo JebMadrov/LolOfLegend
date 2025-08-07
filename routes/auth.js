@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
     return res.render('register', { error: 'Nom d’utilisateur déjà utilisé.' });
   }
 
-  users.push({ username, password });
+  users.push({ username, password, icon:"/logo.png", team:("Team "+username), trigramme:username.slice(0, 3).toUpperCase(),victoires:0,defaites:0,LP:1000 });
   await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
   req.session.authenticated = true;
   req.session.username = username;

@@ -43,17 +43,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   socket.on('connectedUsers', (userList) => {
     const ul = document.getElementById('joueursconnectes');
+    console.log(userList);
     ul.innerHTML = ''; 
-    userList.forEach(username => {
+    userList.forEach(user => {
       const li = document.createElement('li');
-      li.textContent = username;
+      li.textContent = user.username;
       ul.appendChild(li);
     });
   });
 
 
+  const logoutLink = document.querySelector('a[href="/logout"]');
+  if (logoutLink) {
+    logoutLink.addEventListener('click', (e) => {
+      e.preventDefault(); // Empêche la redirection immédiate
+      if (socket && socket.connected) {
+        socket.disconnect();
+      }
+      setTimeout(() => {
+        window.location.href = '/logout';
+      }, 100);
+    });
+  }
 
 });
-
-
 
