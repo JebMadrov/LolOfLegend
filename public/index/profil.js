@@ -67,8 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
             team: document.getElementById('team').value,
             trigramme: document.getElementById('trigramme').value
         };
-        
+        socket.emit('setUsername', username);
         socket.emit('updateAccountInfo', updatedData);
+        if(username!=document.getElementById('username').value){
+            window.location.href = '/logout';
+        };
     });
     
     socket.on('accountInfoUpdated', (data) => {

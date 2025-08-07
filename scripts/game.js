@@ -9,34 +9,46 @@ const USERS_FILE = path.join(__dirname, '../users.json');
 function generateGameId() {
   return Math.random().toString(36).substr(2, 9); // exemple : 'k3tz2gh9a'
 }
+function sendPlayersConnected(io){
+  io.emit('connectedUsers', Array.from(users.values()).map(u => ({
+    username: u.username,
+    icon: u.icon,
+    team: u.team,
+    LP: u.LP,
+    trigramme:u.trigramme,
+    defaites:u.defaites,
+    victoires:u.victoires
+  })));
+}
+async function sendClassement(io) {
+  try {
+    const data = await fs.readFile(USERS_FILE, "utf8");
+    const users = JSON.parse(data);
+    const userArray = Object.values(users); // si users est un objet avec des usernames en clé
+    io.emit("reponseClassement", userArray);
+  } catch (err) {
+    console.error("Erreur lecture ou parsing users.json :", err);
+  }
+}
 
 function registerSocketHandlers(io, socket) {
   // Le client doit envoyer son pseudo juste après connexion Socket
   socket.on('setUsername', async (username) => {
+    console.log("username reçu :"+username);
     try {
       const data = await fs.readFile(USERS_FILE, 'utf-8');
       const allUsers = JSON.parse(data);
       const user = allUsers.find(u => u.username === username);
-
       if (!user) {
         return socket.emit('authError', 'Utilisateur non trouvé');
       }
-
       socket.username = username;
       users.set(socket.id, {
         ...user,
         socket // très utile pour faire .emit plus tard
       });
-
-      io.emit('connectedUsers', Array.from(users.values()).map(u => ({
-      username: u.username,
-      icon: u.icon,
-      team: u.team,
-      LP: u.LP,
-      trigramme:u.trigramme,
-      defaites:u.defaites,
-      victoires:u.victoires
-    })));
+      sendPlayersConnected(io);
+      sendClassement(io);
     } catch (err) {
       console.error('Erreur chargement users.json :', err);
     }
@@ -63,36 +75,43 @@ function registerSocketHandlers(io, socket) {
     try {
       const data = await fs.readFile(USERS_FILE, 'utf-8');
       const allUsers = JSON.parse(data);
+  
       const userIndex = allUsers.findIndex(u => u.username === current.username);
       if (userIndex === -1) {
         return socket.emit('accountInfoError', 'Utilisateur introuvable dans le fichier');
       }
+      // Vérification si le nouveau username est déjà pris
+      if (
+        newData.username &&
+        newData.username !== current.username &&
+        allUsers.some(u => u.username === newData.username)
+      ) {
+        return socket.emit('accountInfoError', 'Ce nom d’utilisateur est déjà pris');
+      }
       const fieldsToUpdate = ['icon', 'team', 'trigramme', 'username', 'password'];
+      // Mise à jour dans le fichier
       fieldsToUpdate.forEach(field => {
         if (field in newData) {
           allUsers[userIndex][field] = newData[field];
           current[field] = newData[field];
-          if (field === 'username') {
-            socket.username = newData.username;
-          }
         }
       });
+      // Mise à jour username dans la socket si changé
+      if (newData.username && newData.username !== current.username) {
+        socket.username = newData.username;
+      }
       await fs.writeFile(USERS_FILE, JSON.stringify(allUsers, null, 2));
+      // Mise à jour de la Map users
       users.set(socket.id, {
         ...current,
         socket
       });
+      // Nettoyage de la donnée envoyée
       const { socket: _, ...safeData } = current;
       socket.emit('accountInfoUpdated', safeData);
-      io.emit('connectedUsers', Array.from(users.values()).map(u => ({
-        username: u.username,
-        icon: u.icon,
-        team: u.team,
-        LP: u.LP,
-        trigramme:u.trigramme,
-        defaites:u.defaites,
-        victoires:u.victoires
-      })));
+      // Rafraîchir l’état côté clients
+      sendClassement(io);
+      sendPlayersConnected(io);
     } catch (err) {
       console.error('Erreur lors de la mise à jour du compte :', err);
       socket.emit('accountInfoError', 'Erreur serveur lors de la mise à jour');
@@ -100,8 +119,6 @@ function registerSocketHandlers(io, socket) {
   });
   
   
-  
-
   // Créer une partie
   socket.on('createGame', (callback) => {
     const gameId = generateGameId();
@@ -140,19 +157,10 @@ function registerSocketHandlers(io, socket) {
     callback({ success: true });
   });
 
-
   // Gestion de la déconnexion
   socket.on('disconnect', () => {
     users.delete(socket.id);
-    io.emit('connectedUsers', Array.from(users.values()).map(u => ({
-      username: u.username,
-      icon: u.icon,
-      team: u.team,
-      LP: u.LP,
-      trigramme:u.trigramme,
-      defaites:u.defaites,
-      victoires:u.victoires
-    })));
+    sendPlayersConnected(io);
 
     for (const [gameId, game] of games) {
       const index = game.players.findIndex(p => p.id === socket.id);

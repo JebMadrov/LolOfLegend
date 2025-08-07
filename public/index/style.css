@@ -5,7 +5,7 @@
   --textJauneFonce : rgb(200, 155, 60);
   --gradientBleu : linear-gradient(130deg, #1973bd, #234da8, #1973bd,#234da8, #1973bd,#234da8);
   --gradientFonce : linear-gradient(130deg, #003b6bb9, #0337a77a, #003b6bb9,#0337a77a, #003b6bb9,#0337a77a);
-  --bleuFonce : rgb(1, 7, 19);
+  --bleuFonce : rgb(3, 11, 28);
 }
 @font-face {
   font-family: "Lol";
@@ -17,7 +17,10 @@
   font-family: "Loln";
   src: url('/ressources/fonts/Spiegel-Regular.otf');}
 
-
+td{
+  font-family: "Lol";
+  color: var(--textJaune);
+}
 body {
   margin: 0; padding: 0; height: 100%; width:100%;
   font-family: Arial, sans-serif;
@@ -37,7 +40,7 @@ body {
 .grille{
   margin: 0; padding: 0; height: 100%; width:100%;
   display: grid;
-  grid-template-rows: 150px auto; /* Ligne fine en haut, ligne large ensuite */
+  grid-template-rows: 120px auto; /* Ligne fine en haut, ligne large ensuite */
   grid-template-columns: 1fr 5fr 1fr; /* Colonne centrale très large */
 
 }
@@ -128,6 +131,10 @@ button:hover{
   -webkit-animation: Animation 1s  infinite linear;
   -moz-animation: Animation 1s  infinite linear;
   animation: Animation 1s  infinite linear;
+}
+span{
+
+  box-sizing: border-box;
 }
 .invitation{
   display:flex;
@@ -354,4 +361,43 @@ button:hover{
 }
 .close-cross:hover {
   opacity: 1;
+}
+.disconnect{
+  color:var(--textJaune);
+  position: absolute;
+  bottom: 10px;
+  left:50%;
+  transform: translateX(-50%);
+}
+.classementContainer {
+  display: block;
+}
+.classement {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  border-collapse: collapse;
+  background-color: #0f0f0f;
+  font-family: sans-serif;
+}
+.classement th, .classement td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+.classement thead {
+  background-color: var(--textJauneFonce);
+  color: black;
+  font-weight: bold;
+}
+.classement tbody tr:hover {
+  background-color: #2c2c2c;
+}
+tr.first-place td {
+  color: var(--textJauneFonce) !important;
+  font-family: "Lolb" !important;
+}
+tr.second-place td {
+  color: rgb(219, 185, 72) !important;
+  font-family: "Lolb" !important;
 }

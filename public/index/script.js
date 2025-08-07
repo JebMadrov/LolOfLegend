@@ -1,6 +1,8 @@
 
 const socket = io();
-socket.emit('setUsername', username);
+socket.on('connect', () => {
+  socket.emit('setUsername', username);
+});
 
 function inviter(username) {
   socket.emit('invitePlayer', { toUsername: username });
@@ -27,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
       status.textContent = "Veuillez entrer un ID de partie.";
       return;
     }
-
     socket.emit("joinGame", { gameId }, ({ success, message }) => {
       if (success) {
         status.textContent = `Rejoint la partie : ${gameId}`;
@@ -56,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (user.username === username) {
         UserCo.innerHTML = `
         <img src="${user.icon}" width="70" height="70" style="vertical-align:middle;" class="IconesUsers">     <p>   <strong style="font-size:2em;color:var(--textJauneFonce)">${user.username}</strong> <br>  <span style="font-size:1em;color:var(--textJaune)"> [${user.trigramme}]  </span> </p>     `;
-        return; // ne pas s’auto-inviter
+        return; 
       }
       const li = document.createElement('li');
       li.innerHTML = `
@@ -69,6 +70,31 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  socket.on("reponseClassement", (userList) => {
+    const tbody = document.getElementById("classement-body");
+    tbody.innerHTML = ''; // Nettoyer le tableau
+    // Trier les utilisateurs par LP décroissant
+    userList.sort((a, b) => b.LP - a.LP);
+    const top10 = userList.slice(0, 10);
+    top10.forEach((user, index) => {
+      const winrate = user.victoires + user.defaites > 0
+        ? Math.round((user.victoires / (user.victoires + user.defaites)) * 100) + '%'
+        : '—';
+      const row = document.createElement('tr');
+      if (index === 0) {
+        row.classList.add('first-place');
+      } else if (index === 1) {
+        row.classList.add('second-place');
+      }
+      row.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.LP}</td>
+        <td>${winrate}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  });
+  
  
 
   const logoutLink = document.querySelector('a[href="/logout"]');
