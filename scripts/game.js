@@ -1,5 +1,6 @@
 const games = new Map();
 const users = new Map(); 
+
 const { PFC } = require('./PFC');
 const path = require('path');
 const fs = require('fs').promises;
@@ -22,12 +23,24 @@ function registerSocketHandlers(io, socket) {
       }
 
       socket.username = username;
-      users.set(socket.id, user);
+      users.set(socket.id, {
+      ...user,
+      socket // très utile pour faire .emit plus tard
+    });
 
-      io.emit('connectedUsers', Array.from(users.values()));
+      io.emit('connectedUsers', Array.from(users.values()).map(u => ({
+      username: u.username,
+      icon: u.icon,
+      team: u.team,
+      LP: u.LP,
+      trigramme:u.trigramme,
+      defaites:u.defaites,
+      victoires:u.victoires
+    })));
     } catch (err) {
       console.error('Erreur chargement users.json :', err);
     }
+    console.log(users);
   });
 
   // Créer une partie
@@ -72,7 +85,15 @@ function registerSocketHandlers(io, socket) {
   // Gestion de la déconnexion
   socket.on('disconnect', () => {
     users.delete(socket.id);
-    io.emit('connectedUsers', Array.from(users.values()));
+    io.emit('connectedUsers', Array.from(users.values()).map(u => ({
+      username: u.username,
+      icon: u.icon,
+      team: u.team,
+      LP: u.LP,
+      trigramme:u.trigramme,
+      defaites:u.defaites,
+      victoires:u.victoires
+    })));
 
     for (const [gameId, game] of games) {
       const index = game.players.findIndex(p => p.id === socket.id);
@@ -88,6 +109,65 @@ function registerSocketHandlers(io, socket) {
       }
     }
   });
+
+  socket.on('invitePlayer', ({ toUsername }) => {
+    const inviter = users.get(socket.id);
+    const target = Array.from(users.values()).find(u => u.username === toUsername);
+
+    if (!target) {
+      return socket.emit('invitationError', 'Joueur introuvable ou déconnecté.');
+    }
+
+    target.socket.emit('gameInvitation', {
+      from: inviter.username,
+      team: inviter.team,
+      icon: inviter.icon
+    });
+  });
+
+  socket.on('acceptInvitation', ({ from }) => {
+    console.log("invitation acceptée + from : " + from);
+    const fromEntry = Array.from(users.entries()).find(([_, u]) => u.username === from);
+    if (!fromEntry) {
+      return socket.emit('invitationError', 'Invitant introuvable.');
+    }
+
+    const [fromSocketId, inviter] = fromEntry;
+    const fromSocket = io.sockets.sockets.get(fromSocketId);
+
+    if (!fromSocket) {
+      return socket.emit('invitationError', 'Invitant déconnecté.');
+    }
+
+    // Créer la partie (en appelant la logique déjà faite)
+    const gameId = generateGameId();
+    const game = {
+      id: gameId,
+      players: [fromSocket],
+      state: {}
+    };
+    fromSocket.join(gameId);
+    games.set(gameId, game);
+
+    // L'autre joueur rejoint
+    game.players.push(socket);
+    socket.join(gameId);
+
+    const playersUsernames = game.players.map(p => p.username || 'Anonyme');
+
+    game.players.forEach(p => p.emit('waitingStart', {}));
+
+    setTimeout(() => {
+      game.players.forEach(p => p.emit('gameStart', { gameId, players: playersUsernames }));
+      PFC(io, game);
+    }, 2000);
+  });
+
+
+
+
+
+
 }
 
 module.exports = { registerSocketHandlers };

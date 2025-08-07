@@ -5,6 +5,7 @@
   --textJauneFonce : rgb(200, 155, 60);
   --gradientBleu : linear-gradient(130deg, #1973bd, #234da8, #1973bd,#234da8, #1973bd,#234da8);
   --gradientFonce : linear-gradient(130deg, #003b6bb9, #0337a77a, #003b6bb9,#0337a77a, #003b6bb9,#0337a77a);
+  --bleuFonce : rgb(1, 7, 19);
 }
 @font-face {
   font-family: "Lol";
@@ -32,10 +33,96 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap : 20px;
 }
+.grille{
+  margin: 0; padding: 0; height: 100%; width:100%;
+  display: grid;
+  grid-template-rows: 150px auto; /* Ligne fine en haut, ligne large ensuite */
+  grid-template-columns: 1fr 5fr 1fr; /* Colonne centrale très large */
 
-
+}
+.cellule{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+.HautGauche, .HautMid, .ContainerUser, .classement, .ListeJoueursCo{
+  background-color: var(--bleuFonce);
+}
+.HautGauche, .HautMid, .ContainerUser{
+  border-bottom: var(--JauneFonce) 1px solid;
+}
+.IconesUsers{
+  border-radius: 999px;
+  border : goldenrod 1px solid;
+}
+.Titre{
+  padding: 10px;
+  font-size: 2em;
+  font-family:'Lol';
+  color:var(--textJaune);
+  text-align: center;
+  width: 100%;
+}
+.UserConnecte{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap : 15px;
+}
+.ListeJoueursConnectes{
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap:20px;
+  margin: 0;
+  margin-left: 10px;
+}
+.ListeJoueursCo{
+  justify-content: flex-start;
+  align-items: start;
+}
+ul {
+  margin-left: 0;
+  padding-left: 0;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
+}
+p{
+  color:var(--textJaune);
+}
+button{
+  border-radius: 999px;
+  padding: 5px 10px;
+  color:var(--textJaune);
+  border:var(--JauneFonce) 1px solid;
+  transition : all ease 0.2s;
+  background: var(--gradientFonce);
+  background-size: 300% 300%;
+  -webkit-animation: Animation 2s  infinite linear;
+  -moz-animation: Animation 2s  infinite linear;
+  animation: Animation 2s  infinite linear;
+}
+button:hover{
+  background:var(--gradientBleu);
+  cursor: pointer;
+  background-size: 300% 300%;
+  -webkit-animation: Animation 1s  infinite linear;
+  -moz-animation: Animation 1s  infinite linear;
+  animation: Animation 1s  infinite linear;
+}
+.invitation{
+  display:flex;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+.NotifInvite{
+    width: 100%;
+}
 @-webkit-keyframes Animation {
     0%{background-position:0% 0%}
     99.99%{background-position:60% 60%}
@@ -53,17 +140,17 @@ body {
 }
 .boutonglow{
   background: linear-gradient(130deg, #003b6bb9, #0337a77a, #003b6bb9,#0337a77a, #003b6bb9,#0337a77a);
-    background-size: 300% 300%;
-    -webkit-animation: Animation 2s  infinite linear;
-    -moz-animation: Animation 2s  infinite linear;
-    animation: Animation 2s  infinite linear;
+  background-size: 300% 300%;
+  -webkit-animation: Animation 2s  infinite linear;
+  -moz-animation: Animation 2s  infinite linear;
+  animation: Animation 2s  infinite linear;
 }
 .boutonglow:hover{
   background: linear-gradient(130deg, #1973bd, #234da8, #1973bd,#234da8, #1973bd,#234da8);
   background-size: 300% 300%;
-    -webkit-animation: Animation 1s  infinite linear;
-    -moz-animation: Animation 1s  infinite linear;
-    animation: Animation 1s  infinite linear;
+  -webkit-animation: Animation 1s  infinite linear;
+  -moz-animation: Animation 1s  infinite linear;
+  animation: Animation 1s  infinite linear;
 }
 
 .loader {
@@ -75,6 +162,7 @@ body {
   animation: spin 2s linear infinite;
   position: absolute;
   display: none;
+  z-index: 999;
 }
 
 @keyframes spin {
@@ -87,6 +175,7 @@ body {
   justify-content: space-evenly;
   flex-direction: column;
   gap:25px;
+  position: absolute;
 }
 .BarreTpsCards{
   display: none;
@@ -130,7 +219,7 @@ body {
   border-radius: 20px;
   border:var(--JauneFonce) 2px solid;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
-  transition: all ease 0.8s;
+  transition: all ease 0.2s;
   display: none;
 }
 .Card:hover{
@@ -142,7 +231,6 @@ body {
   cursor: pointer;
 }
 .Selected_Card{
-
   background: var(--gradientFonce);
   -webkit-animation: Animation 2s  infinite linear;
   -moz-animation: Animation 2s  infinite linear;
@@ -154,7 +242,27 @@ body {
   display: block;
   height:290px;
   width: 159px;
-  background-color: transparent;
+  content: '';
+  top:4px;
+  left:4px;
+  border-radius: 15px;
+  border: 1px solid var(--JauneFonce);
+}
+.Card_Ennemi{
+  height: 300px;
+  width: 169px;
+  background: var(--VioletFonce);
+  border-radius: 20px;
+  border:var(--JauneFonce) 2px solid;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
+  transition: all ease 0.2s;
+  display: none;
+}
+.Card_Ennemi::before{
+  position:relative;
+  display: block;
+  height:290px;
+  width: 159px;
   content: '';
   top:4px;
   left:4px;

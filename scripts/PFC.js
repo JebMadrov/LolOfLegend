@@ -29,7 +29,13 @@ function PFC(io, game) {
           game.state = {
             firstpick : gagnant.username
           };
-          game.players.forEach(player => {player.emit('PFC_Fini',gagnant.username);});
+          game.players.forEach(player => {
+            const adversaire = player === player1 ? player2 : player1;
+            player.emit('PFC_Fini', {
+              gagnant: gagnant.username,
+              carteAdversaire: adversaire.Card
+            });
+          });
           player1.Card = null;
           player2.Card = null;
         }

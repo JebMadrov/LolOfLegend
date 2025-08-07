@@ -8,19 +8,40 @@
 </head>
 <body>
     <div class="loader" id="spinningloader"></div>
-    <h1>Bienvenue, <%= username %></h1>
-    <a href="/logout">Déconnexion</a>
-      <div>
-    <button id="createBtn">Créer une partie</button>
-  </div>
+    <div class="grille">
 
-  <div>
-    <input id="gameIdInput" placeholder="ID de la partie à rejoindre" />
-    <button id="joinBtn">Rejoindre une partie</button>
-  </div>
+      <div class="HautGauche cellule" ></div>
 
-  <p id="status"></p>
-  <ul id="joueursconnectes"></ul>
+      <div class="HautMid cellule">     </div>
+
+      <div class="ContainerUser cellule">
+        <div class="UserConnecte"></div> <a href="/logout">Déconnexion</a> 
+      </div>
+
+      <div class="classement cellule"></div>
+
+      <div class="MainContainer cellule">
+         
+        <div class="Accueil">
+          <button id="createBtn">Créer une partie</button>  
+          <input id="gameIdInput" placeholder="ID de la partie à rejoindre" />
+          <button id="joinBtn">Rejoindre une partie</button>
+          <p id="status"></p>
+        </div>
+        
+      </div>
+
+      <div class="ListeJoueursCo cellule">
+        <span class="Titre">Joueurs connectés</span>
+        <ul id="joueursconnectes"></ul>
+        <div class="NotifInvite"></div>
+      </div>
+
+
+    </div>
+
+
+  
 
 <!-- =======================PFC======================= -->
 
@@ -32,7 +53,9 @@
       <div class="Card_Pierre Card" id="Card-Pierre">Pierre</div>
       <div class="Card_Feuille Card" id="Card-Feuille">Feuille</div>
       <div class="Card_Ciseaux Card" id="Card-Ciseaux">Ciseaux</div>
+      <div class="Card_Ennemi"></div>
     </div>
+    <div class="gagnantPFC"></div>
   </div>
 
 <!-- =======================PFC======================= -->
