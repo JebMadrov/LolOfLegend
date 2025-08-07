@@ -24,9 +24,9 @@ function registerSocketHandlers(io, socket) {
 
       socket.username = username;
       users.set(socket.id, {
-      ...user,
-      socket // très utile pour faire .emit plus tard
-    });
+        ...user,
+        socket // très utile pour faire .emit plus tard
+      });
 
       io.emit('connectedUsers', Array.from(users.values()).map(u => ({
       username: u.username,
@@ -42,6 +42,56 @@ function registerSocketHandlers(io, socket) {
     }
     console.log(users);
   });
+
+  socket.on('requestAccountInfo', () => {
+    const user = users.get(socket.id);
+    if (!user) {
+      socket.emit('accountInfoError', 'Utilisateur non connecté');
+      return;
+    }
+    // On ne renvoie que les données pertinentes, pas le socket lui-même
+    const { socket: _, ...userData } = user;
+    socket.emit('accountInfo', userData);
+  });
+
+  socket.on('updateAccountInfo', async (newData) => {
+    const current = users.get(socket.id);
+    if (!current) {
+      socket.emit('accountInfoError', 'Utilisateur non connecté');
+      return;
+    }
+    try {
+      const data = await fs.readFile(USERS_FILE, 'utf-8');
+      const allUsers = JSON.parse(data);
+      const userIndex = allUsers.findIndex(u => u.username === current.username);
+      if (userIndex === -1) {
+        return socket.emit('accountInfoError', 'Utilisateur introuvable dans le fichier');
+      }
+      const fieldsToUpdate = ['icon', 'team', 'trigramme', 'username', 'password'];
+      fieldsToUpdate.forEach(field => {
+        if (field in newData) {
+          allUsers[userIndex][field] = newData[field];
+          current[field] = newData[field];
+          if (field === 'username') {
+            socket.username = newData.username;
+          }
+        }
+      });
+      await fs.writeFile(USERS_FILE, JSON.stringify(allUsers, null, 2));
+      users.set(socket.id, {
+        ...current,
+        socket
+      });
+      const { socket: _, ...safeData } = current;
+      socket.emit('accountInfoUpdated', safeData);
+    } catch (err) {
+      console.error('Erreur lors de la mise à jour du compte :', err);
+      socket.emit('accountInfoError', 'Erreur serveur lors de la mise à jour');
+    }
+  });
+  
+  
+  
 
   // Créer une partie
   socket.on('createGame', (callback) => {
@@ -77,7 +127,7 @@ function registerSocketHandlers(io, socket) {
     setTimeout(() => {
       game.players.forEach(p => p.emit('gameStart', { gameId, players: playersUsernames }));
       PFC(io,game);
-    }, 2000); // 2 secondes
+    }, 500); // 500 milisecondes
     callback({ success: true });
   });
 
@@ -160,7 +210,7 @@ function registerSocketHandlers(io, socket) {
     setTimeout(() => {
       game.players.forEach(p => p.emit('gameStart', { gameId, players: playersUsernames }));
       PFC(io, game);
-    }, 2000);
+    }, 500);
   });
 
 

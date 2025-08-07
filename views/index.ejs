@@ -59,11 +59,53 @@
   </div>
 
 <!-- =======================PFC======================= -->
+
+<!-- =======================Profil======================= -->
+
+  <div class="ProfilContainer">
+    <div class="ProfilColumn Modifiable">
+      <h2>Éditer le profil</h2>
+      
+      <label>Icône :</label>
+      <img id="iconPreview" src="/logo.png" alt="Icône du joueur" style="width: 100px; height: 100px; cursor: pointer; border-radius: 10px;" />
+      <input type="file" id="iconUpload" accept="image/*" style="display: none;" />
+      <input type="hidden" id="icon" />
+
+
+      <label for="username">Nom d’utilisateur :</label>
+      <input type="text" id="username" />
+  
+      <label for="password">Mot de passe :</label>
+      <input type="password" id="password" />
+  
+      <label for="team">Équipe :</label>
+      <input type="text" id="team" />
+  
+      <label for="trigramme">Trigramme :</label>
+      <input type="text" id="trigramme" />
+  
+      <button id="saveChanges">Enregistrer</button>
+    </div>
+  
+    <div class="ProfilColumn Infos">
+      <h2>Informations</h2>
+  
+      <p><strong>Points de Ligue :</strong> <span id="lp"></span></p>
+      <p><strong>Victoires :</strong> <span id="wins"></span></p>
+      <p><strong>Défaites :</strong> <span id="losses"></span></p>
+    </div>
+
+
+  </div>
+
+<!-- =======================Profil======================= -->
+
   <script>
     const username = "<%= username %>";
   </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/index/script.js"></script>
   <script src="/index/PFCclient.js"></script>
+  <script src="/index/profil.js"></script>
 </body>
 </html>

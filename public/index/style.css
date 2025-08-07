@@ -72,6 +72,7 @@ body {
   align-items: center;
   justify-content: center;
   gap : 15px;
+  cursor: pointer;
 }
 .ListeJoueursConnectes{
   display: flex;
@@ -154,8 +155,8 @@ button:hover{
 }
 
 .loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
+  border: 10px solid goldenrod; /* Light grey */
+  border-top: 10px solid var(--VioletFonce); /* Blue */
   border-radius: 50%;
   width: 120px;
   height: 120px;
@@ -163,6 +164,8 @@ button:hover{
   position: absolute;
   display: none;
   z-index: 999;
+  outline: rgb(158, 117, 15) 2px solid;
+  outline-offset: -15px;
 }
 
 @keyframes spin {
@@ -198,7 +201,7 @@ button:hover{
   box-shadow: #1973bd 5px 0 3px;
 }
 .BarreTpsCards.animate::after {
-  animation: fillBar 5s linear forwards;
+  animation: fillBar 3s linear forwards;
 }
 @keyframes fillBar {
   from { width: 0%; }
@@ -219,8 +222,15 @@ button:hover{
   border-radius: 20px;
   border:var(--JauneFonce) 2px solid;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
-  transition: all ease 0.2s;
+  transition: all ease 0.5s;
   display: none;
+  opacity: 1;
+  outline: 1px solid var(--JauneFonce);
+  outline-offset: -5px;
+}
+.Card.fade-out {
+  opacity: 0;
+  pointer-events: none;
 }
 .Card:hover{
   background: var(--gradientBleu);
@@ -237,16 +247,9 @@ button:hover{
   animation: Animation 2s  infinite linear;
   background-size: 300% 300%;
 }
-.Card::before{
-  position:relative;
-  display: block;
-  height:290px;
-  width: 159px;
-  content: '';
-  top:4px;
-  left:4px;
-  border-radius: 15px;
-  border: 1px solid var(--JauneFonce);
+.Selected_Card.move-to-center {
+  margin: 0 auto;
+  transform: scale(1.2);
 }
 .Card_Ennemi{
   height: 300px;
@@ -255,17 +258,56 @@ button:hover{
   border-radius: 20px;
   border:var(--JauneFonce) 2px solid;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
-  transition: all ease 0.2s;
+  transition: all ease 0.5s;
   display: none;
+  opacity: 0;
+  outline: 1px solid var(--JauneFonce);
+  outline-offset: -5px;
 }
-.Card_Ennemi::before{
-  position:relative;
+.Card_Ennemi.visible {
+  opacity: 1;
+}
+.gagnantPFC{
+  width: 100px;
+  height: 100px;
+  background-color: aqua;
+  display: none;
+  color:var(--textJauneFonce);
+}
+.ProfilContainer{
+  background-color: var(--VioletFonce);
+  height: 80%;
+  width: 70%;
+  border-radius: 20px;
+  border:var(--JauneFonce) 2px solid;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
+  transition: all ease 0.5s;
+  display: none;
+  outline: var(--JauneFonce) 1px solid;
+  outline-offset: -8px;
+  position: absolute;
+  padding: 20px;
+}
+.ProfilColumn {
+  flex: 1;
+  padding: 20px;
+}
+
+.ProfilColumn label {
   display: block;
-  height:290px;
-  width: 159px;
-  content: '';
-  top:4px;
-  left:4px;
-  border-radius: 15px;
-  border: 1px solid var(--JauneFonce);
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.ProfilColumn input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+#saveChanges {
+  margin-top: 15px;
+  padding: 10px;
+  width: 100%;
+  font-weight: bold;
 }

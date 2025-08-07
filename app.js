@@ -6,7 +6,9 @@ const path = require('path');
 const authRoutes = require('./routes/auth');
 const app = express();
 const PORT = 31245;
+const uploadRouter = require('./routes/upload'); 
 
+app.use(uploadRouter);
 
 // Middlewares globaux
 app.use(bodyParser.urlencoded({ extended: true }));
