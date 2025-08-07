@@ -188,6 +188,13 @@ span{
   outline: rgb(158, 117, 15) 2px solid;
   outline-offset: -15px;
 }
+.QuitterPartie {
+  position: absolute;
+  display: none;
+  z-index: 999;
+  bottom: 5px;
+  left:5px;
+}
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

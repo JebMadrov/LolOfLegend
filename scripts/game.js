@@ -30,6 +30,20 @@ async function sendClassement(io) {
     console.error("Erreur lecture ou parsing users.json :", err);
   }
 }
+function EndTheGame(Id) {
+  const game = games.get(Id);
+  if (!game) return; // Aucune partie trouvée
+  // Informer tous les joueurs que la partie est terminée
+  game.players.forEach(player => {
+    if (player && player.emit) {
+      player.emit('gameEnded'); // Vous pouvez adapter le nom ou ajouter un message
+    }
+  });
+  // Supprimer la partie
+  games.delete(Id);
+  console.log("games en cours : " +games);
+}
+
 
 function registerSocketHandlers(io, socket) {
   // Le client doit envoyer son pseudo juste après connexion Socket
@@ -229,6 +243,23 @@ function registerSocketHandlers(io, socket) {
       PFC(io, game);
     }, 500);
   });
+
+  socket.on('SendEndTheGame', () => {
+    for (const [gameId, game] of games) {
+      const isPlayerInGame = game.players.some(p => p.id === socket.id);
+      if (isPlayerInGame) {
+        // Informer tous les joueurs de la fin de la partie
+        game.players.forEach(player => {
+          if (player && player.emit) {
+            player.emit('gameEnded');
+          }
+        });
+        games.delete(gameId);
+      }
+    }
+    console.log("games en cours : "+games);
+  });
+  
 
 
 

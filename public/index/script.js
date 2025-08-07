@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const gameIdInput = document.getElementById("gameIdInput");
   const spinningloader = document.getElementById("spinningloader");
   const accueil = document.querySelector(".Accueil");
+  const EndTheGame=document.getElementById("EndTheGame");
 
   createBtn.addEventListener("click", () => {
     socket.emit("createGame", ({ gameId }) => {
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
  socket.on("gameStart", ({ gameId, players }) => {
   status.textContent = `La partie ${gameId} commence ! Joueurs : ${players.join(" vs ")}`;
   spinningloader.style.display = "none";
+  EndTheGame.style.display = "block";
   });
 
   socket.on('waitingStart', ({ gameId, players, delaySeconds }) => {
@@ -94,8 +96,14 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(row);
     });
   });
+  socket.on('gameEnded', () => {
+    alert('La partie a été terminée par le serveur.');
+    // Rediriger, nettoyer l’interface, etc.
+  });
   
- 
+  EndTheGame.addEventListener("click",()=>{
+    socket.emit("SendEndTheGame");
+  });
 
   const logoutLink = document.querySelector('a[href="/logout"]');
   if (logoutLink) {
