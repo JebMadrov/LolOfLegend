@@ -1,103 +1,140 @@
-document.addEventListener("DOMContentLoaded", () => {   
-    socket.on("gameStart", ({ gameId, players }) => {
-        PFCClient(gameId);
-    });
-
-});
-
-
-function PFCClient(gameId) {
-    const cards = document.querySelectorAll('.Card');
-    cards.forEach(card => {card.style.display="block"});
-    // Ajouter un événement de clic à chaque carte
-    cards.forEach(card => {
-        card.addEventListener('click', function() {
-            // Enlever la classe "Selected_Card" de toutes les cartes
-            cards.forEach(c => c.classList.remove('Selected_Card'));
-            
-            // Ajouter la classe "Selected_Card" à la carte cliquée
-            this.classList.add('Selected_Card');
-
-            //Send la carte au serveur
-            const cardSelected=this.classList[0];
-            socket.emit('SelectCard', cardSelected);
-        });
-    });
-
-    const fin=document.getElementById("BarreTpsCards");
-    socket.on("CardsSelected",()=>{
-        fin.style.display = "block";
-        document.querySelector('.BarreTpsCards').classList.add('animate');
-        setTimeout(() => {
-            socket.emit("finSelectCards");
-        }, 3000);
-    });
-
-    socket.on("RestartPFC",()=>{
-        fin.style.display = "none";
-        document.querySelector('.BarreTpsCards').classList.remove('animate');
-        cards.forEach(c => c.style.display="block");
-        cards.forEach(c => c.classList.remove('Selected_Card'));
-
-    });
-
-    socket.on("PFC_Fini",({ gagnant, carteAdversaire })=>{
-        fin.style.display = "none";
-        document.querySelector('.BarreTpsCards').classList.remove('animate');
+export function PFCClient(gameId) {
+    return new Promise((resolve) => { // <-- Promise qui se résout quand PFC est fini
+        const cards = document.querySelectorAll('.Card');
+        cards.forEach(card => { card.style.display = "flex" });
 
         cards.forEach(card => {
-            if (!card.classList.contains('Selected_Card')) {
-                card.classList.add('fade-out');
-            }
+            card.onclick = function() {
+                cards.forEach(c => c.classList.remove('Selected_Card'));
+                this.classList.add('Selected_Card');
+                const cardSelected = this.classList[0];
+                socket.emit('SelectCard', cardSelected);
+                console.log("carte envoyée")
+            };
+        });
+        const fin = document.getElementById("BarreTpsCards");
+
+        socket.off("CardsSelected");
+        socket.on("CardsSelected", () => {
+            fin.style.display = "block";
+            document.querySelector('.BarreTpsCards').classList.add('animate');
+            setTimeout(() => socket.emit("finSelectCards"), 3000);
         });
 
-        const ennemiDiv = document.querySelector('.Card_Ennemi');
-        if (ennemiDiv) {
-            ennemiDiv.style.display = 'block';
-            ennemiDiv.textContent = carteAdversaire.slice(5);
-        }
+        socket.off("RestartPFC");
+        socket.on("RestartPFC", () => {
+            fin.style.display = "none";
+            document.querySelector('.BarreTpsCards').classList.remove('animate');
+            cards.forEach(c => c.style.display = "flex");
+            cards.forEach(c => c.classList.remove('Selected_Card'));
+        });
 
-        /*cards.forEach(c => c.style.display="none");*/
-        cards.forEach(c => c.classList.remove('Selected_Card'));
-        console.log(gagnant + " a gagné");
+        /*socket.off("gameEnded");*/
+        socket.once('gameEnded', () => {
+            resetPFC();
+            resolve();
+          });
 
-        const gagnantDiv = document.querySelector('.gagnantPFC');
+        socket.off("PFC_Fini");
+        socket.on("PFC_Fini", ({ gagnant, carteAdversaire }) => {
+            fin.style.display = "none";
+            document.querySelector('.BarreTpsCards').classList.remove('animate');
         
-        setTimeout(() => {
-            // 3. Centrer la carte sélectionnée
-            const selected = document.querySelector('.Selected_Card');
-            if (selected) {
-                selected.classList.add('move-to-center');
-            }
-
-            // 4. Afficher la carte ennemie avec fade-in
+            // Masquer visuellement les cartes non sélectionnées (fade-out)
+            cards.forEach(card => {
+                if (!card.classList.contains('Selected_Card')) {
+                    card.classList.add('fade-out');
+                    // Après la durée de transition CSS (500ms), on met display:none
+                    setTimeout(() => { card.style.display = "none"; }, 500);
+                }
+            });
+        
             const ennemiDiv = document.querySelector('.Card_Ennemi');
             if (ennemiDiv) {
-                ennemiDiv.textContent = carteAdversaire.slice(5);
-                ennemiDiv.classList.add('visible');
-                ennemiDiv.style.display = 'block';
+                ennemiDiv.style.display = 'flex';
+                ennemiDiv.className = `Card_Ennemi Card_${carteAdversaire.slice(5)}`; // applique la bonne image
+                ennemiDiv.innerHTML = `<span class="Card_Span">${carteAdversaire.slice(5)}</span><div class="${carteAdversaire.slice(5)}"></div>`;
             }
-
-            // 5. Afficher le gagnant après 2 secondes supplémentaires
+        
+            const gagnantDiv = document.querySelector('.gagnantPFC');
+            console.log(username + " " + gagnant +" "+ carteAdversaire);
             setTimeout(() => {
-                const gagnantDiv = document.querySelector('.gagnantPFC');
-                if (gagnantDiv) {
-                    gagnantDiv.textContent = `Gagnant : ${gagnant}`;
-                    gagnantDiv.style.display = "block";
-                }
-
-                // 6. Nettoyer tout après l'affichage
-                cards.forEach(c => {
-                    c.style.display = "none";
-                    c.classList.remove('fade-out', 'move-to-center', 'Selected_Card');
-                });
+                const selected = document.querySelector('.Selected_Card');
+        
                 if (ennemiDiv) {
-                    ennemiDiv.classList.remove('visible');
-                    ennemiDiv.style.display = "none";
+                    ennemiDiv.classList.add('visible');
+                    ennemiDiv.style.display = 'flex';
                 }
+        
+                // Déterminer la carte perdante
+                let perdantCard = null;
+                if (gagnant === username){
+                    perdantCard = ennemiDiv;
+                } 
+                else  perdantCard = selected;
+                console.log(perdantCard);
+                if (perdantCard) {
+                    perdantCard.classList.add("CartePerdante");
+                }
+        
+                setTimeout(() => {
+                    if (gagnantDiv) {
+                        gagnantDiv.textContent = `Gagnant : ${gagnant}`;
+                        gagnantDiv.style.display = "flex";
+                    }
+        
+                    cards.forEach(c => {
+                        c.style.display = "none";
+                        c.classList.remove('fade-out', 'Selected_Card','CartePerdante');
+                    });
+                    if (ennemiDiv) {
+                        ennemiDiv.classList.remove('visible');
+                        ennemiDiv.style.display = "none";
+                    }
+        
+                    setTimeout(() => {  
+                        gagnantDiv.style.display = "none";
+                        resetPFC();
+                        resolve();
+                    }, 3000);
+                }, 4000);
+            }, 200);
+        });
+        
+    });
+}
 
-            }, 4000); // délai pour le gagnant
-        }, 200); 
+function resetPFC() {
+    const cards = document.querySelectorAll('.Card');
+    const ennemiDiv = document.querySelector('.Card_Ennemi');
+    const gagnantDiv = document.querySelector('.gagnantPFC');
+    const barreTps = document.getElementById("BarreTpsCards");
+
+    // Réinitialiser l'affichage et classes des cartes
+    cards.forEach(card => {
+        card.style.display = "none";                // cartes masquées par défaut
+        card.classList.remove('Selected_Card', 'fade-out', 'CartePerdante');
+        card.style.opacity = "1";                    // reset opacité si modifiée
+        card.style.backgroundColor = "";            // reset couleur au cas où
     });
 
+    // Réinitialiser la carte ennemie
+    if (ennemiDiv) {
+        ennemiDiv.style.display = "none";
+        ennemiDiv.className = "Card_Ennemi";        // retirer toutes classes supplémentaires
+        ennemiDiv.textContent = "";                  // vider contenu HTML
+        ennemiDiv.style.backgroundColor = "";
+    }
+
+    // Réinitialiser le message gagnant
+    if (gagnantDiv) {
+        gagnantDiv.style.display = "none";
+        gagnantDiv.textContent = "";
+    }
+
+    // Réinitialiser la barre de temps
+    if (barreTps) {
+        barreTps.style.display = "none";
+        barreTps.classList.remove('animate');
+    }
 }

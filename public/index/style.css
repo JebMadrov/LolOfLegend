@@ -5,7 +5,10 @@
   --textJauneFonce : rgb(200, 155, 60);
   --gradientBleu : linear-gradient(130deg, #1973bd, #234da8, #1973bd,#234da8, #1973bd,#234da8);
   --gradientFonce : linear-gradient(130deg, #003b6bb9, #0337a77a, #003b6bb9,#0337a77a, #003b6bb9,#0337a77a);
-  --bleuFonce : rgb(3, 11, 28);
+  --bleuFonce : #010a13;
+}
+button {
+  will-change: background-position; /* Optimise l'animation du gradient */
 }
 @font-face {
   font-family: "Lol";
@@ -24,7 +27,7 @@ td{
 body {
   margin: 0; padding: 0; height: 100%; width:100%;
   font-family: Arial, sans-serif;
-  background: url('bg1.jpg') no-repeat center center fixed;
+  background: url('bg2.png') no-repeat center center fixed;
   background-color: rgb(104, 104, 104);
   background-size: cover;
   color: #e0e0e0;
@@ -42,21 +45,24 @@ body {
   display: grid;
   grid-template-rows: 120px auto; /* Ligne fine en haut, ligne large ensuite */
   grid-template-columns: 1fr 5fr 1fr; /* Colonne centrale très large */
-
+  border-top:3px rgb(131, 101, 17) solid;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 .cellule{
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  backdrop-filter: blur(10px);
-  background-color: rgba(0, 0, 0, 0.8);
+
 }
-.HautGauche, .HautMid, .ContainerUser, .classement, .ListeJoueursCo{
+.ContainerUser , .ListeJoueursCo{
   background-color: var(--bleuFonce);
 }
+.ContainerUser{
+  padding: 10px;
+}
 .HautGauche, .HautMid, .ContainerUser{
-  border-bottom: var(--JauneFonce) 1px solid;
+  border-bottom: var(--JauneFonce) 2px solid;
 }
 .IconesUsers{
   border-radius: 999px;
@@ -78,6 +84,17 @@ body {
   gap : 15px;
   cursor: pointer;
 }
+.UserConnecte img {
+  outline: rgba(218, 165, 32, 0) 1px solid;
+  outline-offset: 0px;
+  transition: all 0.1s ease;
+}
+.UserConnecte:hover img {
+  outline: rgba(218, 165, 32, 1) 1px solid;
+  outline-offset: 5px;
+  border:rgb(255, 226, 61) 1px solid;
+}
+
 .ListeJoueursConnectes{
   display: flex;
   align-items: center;
@@ -109,8 +126,6 @@ h2{
   width: 100%;
   display: block;
   margin:0;
-  -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: rgba(100, 72, 0, 0.78);
 }
 button{
   border-radius: 999px;
@@ -132,8 +147,7 @@ button:hover{
   -moz-animation: Animation 1s  infinite linear;
   animation: Animation 1s  infinite linear;
 }
-span{
-
+span, h2, input, p{
   box-sizing: border-box;
 }
 .invitation{
@@ -201,7 +215,7 @@ span{
   100% { transform: rotate(360deg); }
 }
 .PFC_Container{
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
@@ -255,10 +269,34 @@ span{
   opacity: 1;
   outline: 1px solid var(--JauneFonce);
   outline-offset: -5px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 }
 .Card.fade-out {
   opacity: 0;
   pointer-events: none;
+}
+.Pierre{
+  background-image: url(../ressources/PFC/pierre.webp);
+  background-repeat: no-repeat;
+  background-size: cover ;
+  width: 90%;
+  aspect-ratio: 1/1;
+}
+.Feuille{
+  background-image: url(../ressources/PFC/feuille.webp);
+  background-repeat: no-repeat;
+  background-size: cover ;
+  width: 90%;
+  aspect-ratio: 1/1;
+}
+.Ciseaux{
+  background-image: url(../ressources/PFC/ciseaux.webp);
+  background-repeat: no-repeat;
+  background-size: cover ;
+  width: 90%;
+  aspect-ratio: 1/1;
 }
 .Card:hover{
   background: var(--gradientBleu);
@@ -275,10 +313,6 @@ span{
   animation: Animation 2s  infinite linear;
   background-size: 300% 300%;
 }
-.Selected_Card.move-to-center {
-  margin: 0 auto;
-  transform: scale(1.2);
-}
 .Card_Ennemi{
   height: 300px;
   width: 169px;
@@ -291,20 +325,47 @@ span{
   opacity: 0;
   outline: 1px solid var(--JauneFonce);
   outline-offset: -5px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
 }
 .Card_Ennemi.visible {
   opacity: 1;
 }
-.gagnantPFC{
-  width: 100px;
-  height: 100px;
-  background-color: aqua;
-  display: none;
+.Card_Span{
+  display: block;
+  padding: 5px;
+  text-align: center;
+  position: absolute;
+  bottom: 30px;
+  font-family: "Lolb";
   color:var(--textJauneFonce);
+}
+.CartePerdante{
+  transition: background-color 1s ease;
+  background-color: #700a0a !important;
+}
+
+.gagnantPFC{
+  padding: 25px;
+  font-size: 1.5em;
+  background: var(--VioletFonce);
+  border-radius: 20px;
+  border:var(--JauneFonce) 2px solid;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
+  transition: all ease 0.5s;
+  display: none;
+  opacity: 1;
+  outline: 1px solid var(--JauneFonce);
+  outline-offset: -5px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  color:var(--textJaune);
 }
 .ProfilContainer{
   background-color: var(--VioletFonce);
-  height: 80%;
+  height: 600px;
   border-radius: 20px;
   border:var(--JauneFonce) 2px solid;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.594);
@@ -378,6 +439,7 @@ span{
 }
 .classementContainer {
   display: block;
+  border-right: 1px solid rgba(185, 185, 185, 0.151) ;
 }
 .classement {
   width: 100%;

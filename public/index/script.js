@@ -1,48 +1,37 @@
+import { PFCClient } from './PFCclient.js';
+import { draftClient } from './draftClient.js';
 
 const socket = io();
+window.socket = socket;
+
+
+
 socket.on('connect', () => {
   socket.emit('setUsername', username);
 });
 
-function inviter(username) {
+export function inviter(username) {
   socket.emit('invitePlayer', { toUsername: username });
 }
+window.inviter = inviter;
 
 document.addEventListener("DOMContentLoaded", () => {
-  const status = document.getElementById("status");
-  const createBtn = document.getElementById("createBtn");
-  const joinBtn = document.getElementById("joinBtn");
-  const gameIdInput = document.getElementById("gameIdInput");
+
   const spinningloader = document.getElementById("spinningloader");
   const accueil = document.querySelector(".Accueil");
   const EndTheGame=document.getElementById("EndTheGame");
+  const PFC = document.querySelector(".PFC_Container");
 
-  createBtn.addEventListener("click", () => {
-    socket.emit("createGame", ({ gameId }) => {
-      status.textContent = `Partie créée. ID : ${gameId}`;
-      gameIdInput.value = gameId;
-    });
-  });
 
-  joinBtn.addEventListener("click", () => {
-    const gameId = gameIdInput.value.trim();
-    if (!gameId) {
-      status.textContent = "Veuillez entrer un ID de partie.";
-      return;
-    }
-    socket.emit("joinGame", { gameId }, ({ success, message }) => {
-      if (success) {
-        status.textContent = `Rejoint la partie : ${gameId}`;
-      } else {
-        status.textContent = `Erreur : ${message}`;
-      }
-    });
-  });
 
- socket.on("gameStart", ({ gameId, players }) => {
-  status.textContent = `La partie ${gameId} commence ! Joueurs : ${players.join(" vs ")}`;
+ socket.on("gameStart",async  ({ gameId, players }) => {
+  console.log( `La partie ${gameId} commence ! Joueurs : ${players.join(" vs ")}`);
   spinningloader.style.display = "none";
   EndTheGame.style.display = "block";
+  PFC.style.display="flex";
+
+  await PFCClient(gameId);
+  await draftClient();
   });
 
   socket.on('waitingStart', ({ gameId, players, delaySeconds }) => {
@@ -98,7 +87,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   socket.on('gameEnded', () => {
     alert('La partie a été terminée par le serveur.');
-    // Rediriger, nettoyer l’interface, etc.
+    accueil.style.display = "block";
+    PFC.style.display="none";
+    EndTheGame.style.display = "none";
   });
   
   EndTheGame.addEventListener("click",()=>{
@@ -130,6 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
     DivNotif.appendChild(invitationDiv);
 
     invitationDiv.querySelector('.acceptBtn').addEventListener('click', () => {
+      socket.emit("SendEndTheGame");
       socket.emit('acceptInvitation', { from });
       invitationDiv.remove();
     });

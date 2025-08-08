@@ -38,10 +38,7 @@
       <div class="MainContainer cellule">
         <button class="QuitterPartie" id="EndTheGame">Quitter</button>
         <div class="Accueil">
-          <button id="createBtn">Créer une partie</button>  
-          <input id="gameIdInput" placeholder="ID de la partie à rejoindre" />
-          <button id="joinBtn">Rejoindre une partie</button>
-          <p id="status"></p>
+          <span class="Titre">En attente d'une partie</span>
         </div>
         
       </div>
@@ -65,9 +62,9 @@
     
     <div class="BarreTpsCards" id="BarreTpsCards"></div>
     <div class="Cards_Container">
-      <div class="Card_Pierre Card" id="Card-Pierre">Pierre</div>
-      <div class="Card_Feuille Card" id="Card-Feuille">Feuille</div>
-      <div class="Card_Ciseaux Card" id="Card-Ciseaux">Ciseaux</div>
+      <div class="Card_Pierre Card" id="Card-Pierre"><span class="Card_Span">Pierre</span> <div class="Pierre"></div> </div>
+      <div class="Card_Feuille Card" id="Card-Feuille"><span class="Card_Span">Feuille</span> <div class="Feuille"></div> </div>
+      <div class="Card_Ciseaux Card" id="Card-Ciseaux"><span class="Card_Span">Ciseaux</span> <div class="Ciseaux"></div> </div>
       <div class="Card_Ennemi"></div>
     </div>
     <div class="gagnantPFC"></div>
@@ -125,8 +122,8 @@
     var username = "<%= username %>";
   </script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/index/script.js"></script>
-  <script src="/index/PFCclient.js"></script>
+  <script type="module" src="/index/script.js"></script>
   <script src="/index/profil.js"></script>
+  
 </body>
 </html>

@@ -132,45 +132,6 @@ function registerSocketHandlers(io, socket) {
     }
   });
   
-  
-  // Créer une partie
-  socket.on('createGame', (callback) => {
-    const gameId = generateGameId();
-
-    const game = {
-      id: gameId,
-      players: [socket],
-      state: {} // état du jeu à définir
-    };
-    socket.join(gameId);
-    games.set(gameId, game);
-
-    callback({ gameId });
-  });
-
-  // Rejoindre une partie
-  socket.on('joinGame', ({ gameId }, callback) => {
-    const game = games.get(gameId);
-    if (!game || game.players.length >= 2) {
-      return callback({ success: false, message: 'Partie introuvable ou pleine.' });
-    }
-
-    game.players.push(socket);
-    socket.join(gameId);
-
-    // Préparer la liste des pseudos des joueurs dans la partie
-    const playersUsernames = game.players.map(p => p.username || 'Anonyme');
-
-    // Notifier les deux joueurs que la partie commence
-    game.players.forEach(p => {p.emit('waitingStart', {});});
-
-    setTimeout(() => {
-      game.players.forEach(p => p.emit('gameStart', { gameId, players: playersUsernames }));
-      PFC(io,game);
-    }, 500); // 500 milisecondes
-    callback({ success: true });
-  });
-
   // Gestion de la déconnexion
   socket.on('disconnect', () => {
     users.delete(socket.id);
@@ -240,11 +201,12 @@ function registerSocketHandlers(io, socket) {
 
     setTimeout(() => {
       game.players.forEach(p => p.emit('gameStart', { gameId, players: playersUsernames }));
-      PFC(io, game);
+      StartTheGame(io,game);
     }, 500);
   });
 
   socket.on('SendEndTheGame', () => {
+    console.log("games en cours : "+games.size);
     for (const [gameId, game] of games) {
       const isPlayerInGame = game.players.some(p => p.id === socket.id);
       if (isPlayerInGame) {
@@ -257,11 +219,13 @@ function registerSocketHandlers(io, socket) {
         games.delete(gameId);
       }
     }
-    console.log("games en cours : "+games);
+    console.log("games en cours : "+games.size);
   });
   
 
-
+  function StartTheGame(io,game){
+    PFC(io, game);
+  }
 
 
 

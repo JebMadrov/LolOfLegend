@@ -5,16 +5,16 @@ function PFC(io, game) {
   var fini = false;
 
   game.players.forEach(player => {
-
+    player.removeAllListeners('SelectCard');
     player.on('SelectCard', (cardSelected) => {
       player.Card = cardSelected   
       if (player1.Card && player2.Card){
         game.players.forEach(player => {player.emit('CardsSelected');});
+        console.log("carte reçue");
       }
       fini = false;
     });
-
-    player.on('finSelectCards', () => {
+    player.once('finSelectCards', () => {
       if(!fini){
         console.log( player1.username + " a joué : " + player1.Card + " et " + player2.username + " a joué : " + player2.Card);
         if(player1.Card === player2.Card){
@@ -40,7 +40,7 @@ function PFC(io, game) {
           player2.Card = null;
         }
       }
-
+    
     });
 
     
