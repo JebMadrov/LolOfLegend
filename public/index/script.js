@@ -1,16 +1,10 @@
-import { PFCClient } from './PFCclient.js';
-import { draftClient } from './draftClient.js';
-
 const socket = io();
-window.socket = socket;
-
-
 
 socket.on('connect', () => {
   socket.emit('setUsername', username);
 });
 
-export function inviter(username) {
+function inviter(username) {
   socket.emit('invitePlayer', { toUsername: username });
 }
 window.inviter = inviter;
@@ -22,16 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const EndTheGame=document.getElementById("EndTheGame");
   const PFC = document.querySelector(".PFC_Container");
 
-
-
- socket.on("gameStart",async  ({ gameId, players }) => {
+ socket.on("gameStart", ({ gameId, players }) => {
   console.log( `La partie ${gameId} commence ! Joueurs : ${players.join(" vs ")}`);
   spinningloader.style.display = "none";
   EndTheGame.style.display = "block";
   PFC.style.display="flex";
-
-  await PFCClient(gameId);
-  await draftClient();
   });
 
   socket.on('waitingStart', ({ gameId, players, delaySeconds }) => {
